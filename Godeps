@@ -62,6 +62,7 @@ github.com/prometheus/common dd2f054febf4a6c00f2343686efb775948a8bff4
 github.com/prometheus/procfs 1878d9fbb537119d24b21ca07effd591627cd160
 github.com/rcrowley/go-metrics 1f30fe9094a513ce4c700b9a54458bbb0c96996c
 github.com/samuel/go-zookeeper 1d7be4effb13d2d908342d349d71a284a7542693
+github.com/SAP/go-hdb c80549df883e955dff808b1258c26f32b3ed10a4
 github.com/satori/go.uuid 5bf94b69c6b68ee1b541973bb8e1144db23a194b
 github.com/shirou/gopsutil 384a55110aa5ae052eb93ea94940548c1e305a99
 github.com/shirou/w32 3c9377fc6748f222729a8270fe2775d149a249ad
@@ -77,6 +78,7 @@ github.com/wvanbergen/kafka bc265fedb9ff5b5c5d3c0fdcef4a819b3523d3ee
 github.com/wvanbergen/kazoo-go 968957352185472eacb69215fa3dbfcfdbac1096
 github.com/yuin/gopher-lua 66c871e454fcf10251c61bf8eff02d0978cae75a
 github.com/zensqlmonitor/go-mssqldb ffe5510c6fa5e15e6d983210ab501c815b56b363
+github.com/vmware/govmomi 0c2ea2e751e7fb3a5ca1ed0d1fec065542086e47
 golang.org/x/crypto dc137beb6cce2043eb6b5f223ab8bf51c32459f4
 golang.org/x/net f2499483f923065a842d38eb4c7f1927e6fc6e6d
 golang.org/x/sys 739734461d1c916b6c72a63d7efda2b27edb369f

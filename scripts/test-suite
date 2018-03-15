@@ -1,0 +1,13 @@
+agent
+cmd/telegraf
+dcai
+internal/config
+plugins/inputs/all
+plugins/inputs/saphana
+plugins/inputs/smart
+plugins/inputs/snmp
+plugins/inputs/tail
+plugins/inputs/tpgy
+plugins/inputs/vspheretpgy
+plugins/outputs/aiservice
+plugins/outputs/all

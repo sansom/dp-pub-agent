@@ -29,7 +29,7 @@ if ! grep "^telegraf:" /etc/group &>/dev/null; then
 fi
 
 if ! id telegraf &>/dev/null; then
-    useradd -r -M telegraf -s /bin/false -d /etc/telegraf -g telegraf
+    useradd -r -m telegraf -s /bin/false -d /home/telegraf -g telegraf
 fi
 
 test -d $LOG_DIR || mkdir -p $LOG_DIR
@@ -99,3 +99,18 @@ elif [[ -f /etc/os-release ]]; then
         fi
     fi
 fi
+
+# grant telegraf with the following privileges
+if [ "`which sudo 2> /dev/null`"  != "" ]
+then
+    echo "telegraf ALL = (root) NOPASSWD:`which sudo`" > /etc/sudoers.d/telegraf
+fi
+if [ "`which smartctl 2> /dev/null`"  != "" ]
+then
+    echo "telegraf ALL = (root) NOPASSWD:`which smartctl`" >> /etc/sudoers.d/telegraf
+fi
+if [ "`which dmidecode 2> /dev/null`"  != "" ]
+then
+    echo "telegraf ALL = (root) NOPASSWD:`which dmidecode`" >> /etc/sudoers.d/telegraf
+fi
+

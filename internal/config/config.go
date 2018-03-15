@@ -139,6 +139,11 @@ type AgentConfig struct {
 	Quiet        bool
 	Hostname     string
 	OmitHostname bool
+
+	SaiClusterDomainId string
+	SaiClusterName     string
+	AgentType          string
+	DmidecodePath      string
 }
 
 // Inputs returns a list of strings of the configured inputs.
@@ -196,7 +201,6 @@ var header = `# Telegraf Configuration
   ## Environment variables can be used as tags, and throughout the config file
   # user = "$USER"
 
-
 # Configuration for telegraf agent
 [agent]
   ## Default data collection interval for all inputs
@@ -252,6 +256,17 @@ var header = `# Telegraf Configuration
   ## If set to true, do no set the "host" tag in the telegraf agent.
   omit_hostname = false
 
+  ## Override default sai cluster domain ID. Default is "DiskProphet for Lab Test"
+  sai_cluster_domain_id = ""
+
+  ## Override default sai cluster name. Default is "dpCluster"
+  sai_cluster_name = ""
+
+  ## Override agent type. Could be linux, vmware, windows (Case sensitive). Default is "linux"
+  agent_type = "linux"
+
+  ## Override dmidecode path.
+  dmidecode_path = ""
 
 ###############################################################################
 #                            OUTPUT PLUGINS                                   #

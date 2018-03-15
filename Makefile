@@ -1,7 +1,12 @@
 PREFIX := /usr/local
-VERSION := $(shell git describe --exact-match --tags 2>/dev/null)
+VERSION := $(shell echo $(packagetag))
+ifndef VERSION
+    VERSION := $(shell git describe --exact-match --tags 2>/dev/null)
+endif
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 COMMIT := $(shell git rev-parse --short HEAD)
+OUTPUTDIR := ./output
+TOOLDIR := ./tools
 ifdef GOBIN
 PATH := $(GOBIN):$(PATH)
 else
@@ -11,12 +16,25 @@ endif
 TELEGRAF := telegraf$(shell go tool dist env | grep -q 'GOOS=.windows.' && echo .exe)
 
 LDFLAGS := $(LDFLAGS) -X main.commit=$(COMMIT) -X main.branch=$(BRANCH)
+PACKAGEFLAGS :=
+PACKAGEDOCKERTAG := $(COMMIT)
 ifdef VERSION
 	LDFLAGS += -X main.version=$(VERSION)
+	PACKAGEFLAGS += --version=$(VERSION)
+	PACKAGEDOCKERTAG = $(VERSION)
 endif
+
+DMIDECODEDEB := dmidecode_3.0-4_amd64.deb
+SUDODEB := sudo_1.8.19p1-2.1_amd64.deb
+SSHPASSDEB := sshpass_1.06-1_amd64.deb
 
 all:
 	$(MAKE) deps
+	$(MAKE) telegraf
+
+dcaiagent:
+	$(MAKE) deps
+	mkdir -p $(OUTPUTDIR)
 	$(MAKE) telegraf
 
 deps:
@@ -24,7 +42,7 @@ deps:
 	gdm restore
 
 telegraf:
-	go build -i -o $(TELEGRAF) -ldflags "$(LDFLAGS)" ./cmd/telegraf/telegraf.go
+	go build -i -o $(OUTPUTDIR)/$(TELEGRAF) -ldflags "$(LDFLAGS)" ./cmd/telegraf/telegraf.go
 
 go-install:
 	go install -ldflags "-w -s $(LDFLAGS)" ./cmd/telegraf
@@ -47,17 +65,19 @@ lint:
 test-all: lint
 	go test ./...
 
-package:
-	./scripts/build.py --package --platform=all --arch=all
+package: 
+	./scripts/build.py --package --platform=all --arch=all $(PACKAGEFLAGS)
 
 clean:
-	-rm -f telegraf
-	-rm -f telegraf.exe
+	-rm -rf build
+	-rm -rf $(OUTPUTDIR)
 
-docker-image:
-	./scripts/build.py --package --platform=linux --arch=amd64
-	cp build/telegraf*$(COMMIT)*.deb .
-	docker build -f scripts/dev.docker --build-arg "package=telegraf*$(COMMIT)*.deb" -t "telegraf-dev:$(COMMIT)" .
+docker-image: deps
+	./scripts/build.py --package --platform=linux --arch=amd64 $(PACKAGEFLAGS)
+	cp $(TOOLDIR)/$(DMIDECODEDEB) ./build/
+	cp $(TOOLDIR)/$(SUDODEB) ./build/
+	cp $(TOOLDIR)/$(SSHPASSDEB) ./build/
+	docker build -f scripts/dev.docker --build-arg "package=./build/telegraf*$(PACKAGEDOCKERTAG)*.deb" --build-arg "dmidedode_deb=./build/$(DMIDECODEDEB)" --build-arg "sudo_deb=./build/$(SUDODEB)" --build-arg "sshpass_deb=./build/$(SSHPASSDEB)" -t "telegraf:$(PACKAGEDOCKERTAG)" .
 
 # Run all docker containers necessary for integration tests
 docker-run:

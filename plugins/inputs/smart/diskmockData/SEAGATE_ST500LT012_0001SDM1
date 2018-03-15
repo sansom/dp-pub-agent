@@ -1,0 +1,330 @@
+{
+{
+}
+}
+$~~@#!#@~~$
+/dev/sda -d sat # /dev/sda [SAT], ATA device
+$~~@#!#@~~$
+smartctl 6.5 2016-01-24 r4214 [x86_64-linux-4.10.0-42-generic] (local build)
+Copyright (C) 2002-16, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Model Family:     Seagate Laptop Thin HDD
+Device Model:     ST500LT012-9WS142
+Serial Number:    W0VBX8CV
+LU WWN Device Id: 5 000c50 069fcbd0a
+Firmware Version: 0001SDM1
+User Capacity:    500,107,862,016 bytes [500 GB]
+Sector Sizes:     512 bytes logical, 4096 bytes physical
+Rotation Rate:    5400 rpm
+Form Factor:      2.5 inches
+Device is:        In smartctl database [for details use: -P show]
+ATA Version is:   ATA8-ACS T13/1699-D revision 4
+SATA Version is:  SATA 2.6, 3.0 Gb/s (current: 3.0 Gb/s)
+Local Time is:    Wed Jan 10 14:54:20 2018 CST
+SMART support is: Available - device has SMART capability.
+SMART support is: Enabled
+AAM feature is:   Unavailable
+APM level is:     254 (maximum performance)
+Rd look-ahead is: Enabled
+Write cache is:   Enabled
+ATA Security is:  Disabled, frozen [SEC2]
+Wt Cache Reorder: Enabled
+
+=== START OF READ SMART DATA SECTION ===
+SMART overall-health self-assessment test result: PASSED
+
+General SMART Values:
+Offline data collection status:  (0x82)	Offline data collection activity
+					was completed without error.
+					Auto Offline Data Collection: Enabled.
+Self-test execution status:      (   0)	The previous self-test routine completed
+					without error or no self-test has ever 
+					been run.
+Total time to complete Offline 
+data collection: 		(    0) seconds.
+Offline data collection
+capabilities: 			 (0x7b) SMART execute Offline immediate.
+					Auto Offline data collection on/off support.
+					Suspend Offline collection upon new
+					command.
+					Offline surface scan supported.
+					Self-test supported.
+					Conveyance Self-test supported.
+					Selective Self-test supported.
+SMART capabilities:            (0x0003)	Saves SMART data before entering
+					power-saving mode.
+					Supports SMART auto save timer.
+Error logging capability:        (0x01)	Error logging supported.
+					General Purpose Logging supported.
+Short self-test routine 
+recommended polling time: 	 (   1) minutes.
+Extended self-test routine
+recommended polling time: 	 ( 102) minutes.
+Conveyance self-test routine
+recommended polling time: 	 (   2) minutes.
+SCT capabilities: 	       (0x1035)	SCT Status supported.
+					SCT Feature Control supported.
+					SCT Data Table supported.
+
+SMART Attributes Data Structure revision number: 10
+Vendor Specific SMART Attributes with Thresholds:
+ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE      UPDATED  WHEN_FAILED RAW_VALUE
+  1 Raw_Read_Error_Rate     0x000f   116   099   006    Pre-fail  Always       -       102950864
+  3 Spin_Up_Time            0x0003   099   099   000    Pre-fail  Always       -       0
+  4 Start_Stop_Count        0x0032   100   100   020    Old_age   Always       -       837
+  5 Reallocated_Sector_Ct   0x0033   100   100   036    Pre-fail  Always       -       0
+  7 Seek_Error_Rate         0x000f   089   060   030    Pre-fail  Always       -       5147294377
+  9 Power_On_Hours          0x0032   089   089   000    Old_age   Always       -       10344 (210 112 0)
+ 10 Spin_Retry_Count        0x0013   100   100   097    Pre-fail  Always       -       0
+ 12 Power_Cycle_Count       0x0032   100   100   020    Old_age   Always       -       404
+184 End-to-End_Error        0x0032   100   100   099    Old_age   Always       -       0
+187 Reported_Uncorrect      0x0032   100   100   000    Old_age   Always       -       0
+188 Command_Timeout         0x0032   100   098   000    Old_age   Always       -       4295032838
+189 High_Fly_Writes         0x003a   100   100   000    Old_age   Always       -       0
+190 Airflow_Temperature_Cel 0x0022   063   047   045    Old_age   Always       -       37 (Min/Max 19/37)
+191 G-Sense_Error_Rate      0x0032   100   100   000    Old_age   Always       -       8
+192 Power-Off_Retract_Count 0x0032   100   100   000    Old_age   Always       -       40
+193 Load_Cycle_Count        0x0032   001   001   000    Old_age   Always       -       291898
+194 Temperature_Celsius     0x0022   037   053   000    Old_age   Always       -       37 (0 18 0 0 0)
+196 Reallocated_Event_Count 0x000f   090   090   030    Pre-fail  Always       -       9530 (57421 0)
+197 Current_Pending_Sector  0x0012   100   100   000    Old_age   Always       -       0
+198 Offline_Uncorrectable   0x0010   100   100   000    Old_age   Offline      -       0
+199 UDMA_CRC_Error_Count    0x003e   200   200   000    Old_age   Always       -       0
+240 Head_Flying_Hours       0x0000   090   090   000    Old_age   Offline      -       9530 (224 77 0)
+241 Total_LBAs_Written      0x0000   100   253   000    Old_age   Offline      -       3444509889
+242 Total_LBAs_Read         0x0000   100   253   000    Old_age   Offline      -       1078956071
+254 Free_Fall_Sensor        0x0032   100   100   000    Old_age   Always       -       0
+
+General Purpose Log Directory Version 1
+SMART           Log Directory Version 1 [multi-sector log support]
+Address    Access  R/W   Size  Description
+0x00       GPL,SL  R/O      1  Log Directory
+0x01           SL  R/O      1  Summary SMART error log
+0x02           SL  R/O      5  Comprehensive SMART error log
+0x03       GPL     R/O      5  Ext. Comprehensive SMART error log
+0x06           SL  R/O      1  SMART self-test log
+0x07       GPL     R/O      1  Extended self-test log
+0x09           SL  R/W      1  Selective self-test log
+0x10       GPL     R/O      1  SATA NCQ Queued Error log
+0x11       GPL     R/O      1  SATA Phy Event Counters log
+0x21       GPL     R/O      1  Write stream error log
+0x22       GPL     R/O      1  Read stream error log
+0x80-0x9f  GPL,SL  R/W     16  Host vendor specific log
+0xa1       GPL,SL  VS      20  Device vendor specific log
+0xa2       GPL     VS    2248  Device vendor specific log
+0xa8       GPL,SL  VS      65  Device vendor specific log
+0xa9       GPL,SL  VS       1  Device vendor specific log
+0xab       GPL     VS       1  Device vendor specific log
+0xb0       GPL     VS    2864  Device vendor specific log
+0xbd-0xbf  GPL     VS   65535  Device vendor specific log
+0xc0       GPL,SL  VS       1  Device vendor specific log
+0xe0       GPL,SL  R/W      1  SCT Command/Status
+0xe1       GPL,SL  R/W      1  SCT Data Transfer
+
+SMART Extended Comprehensive Error Log Version: 1 (5 sectors)
+No Errors Logged
+
+SMART Extended Self-test Log Version: 1 (1 sectors)
+Num  Test_Description    Status                  Remaining  LifeTime(hours)  LBA_of_first_error
+# 1  Short offline       Completed without error       00%      9922         -
+
+SMART Selective self-test log data structure revision number 1
+ SPAN  MIN_LBA  MAX_LBA  CURRENT_TEST_STATUS
+    1        0        0  Not_testing
+    2        0        0  Not_testing
+    3        0        0  Not_testing
+    4        0        0  Not_testing
+    5        0        0  Not_testing
+Selective self-test flags (0x0):
+  After scanning selected spans, do NOT read-scan remainder of disk.
+If Selective self-test is pending on power-up, resume after 0 minute delay.
+
+SCT Status Version:                  3
+SCT Version (vendor specific):       522 (0x020a)
+SCT Support Level:                   1
+Device State:                        Active (0)
+Current Temperature:                    37 Celsius
+Power Cycle Min/Max Temperature:     19/37 Celsius
+Lifetime    Min/Max Temperature:     18/53 Celsius
+Lifetime    Average Temperature:        36 Celsius
+Under/Over Temperature Limit Count:   0/0
+
+SCT Temperature History Version:     2
+Temperature Sampling Period:         1 minute
+Temperature Logging Interval:        30 minutes
+Min/Max recommended Temperature:     14/55 Celsius
+Min/Max Temperature Limit:           10/60 Celsius
+Temperature History Size (Index):    128 (32)
+
+Index    Estimated Time   Temperature Celsius
+  33    2018-01-07 23:00    38  *******************
+  34    2018-01-07 23:30    38  *******************
+  35    2018-01-08 00:00    39  ********************
+  36    2018-01-08 00:30    38  *******************
+  37    2018-01-08 01:00    38  *******************
+  38    2018-01-08 01:30    38  *******************
+  39    2018-01-08 02:00    39  ********************
+  40    2018-01-08 02:30    39  ********************
+  41    2018-01-08 03:00     ?  -
+  42    2018-01-08 03:30    24  *****
+  43    2018-01-08 04:00    25  ******
+  44    2018-01-08 04:30    35  ****************
+  45    2018-01-08 05:00    37  ******************
+  46    2018-01-08 05:30    39  ********************
+  47    2018-01-08 06:00    38  *******************
+  48    2018-01-08 06:30    39  ********************
+  49    2018-01-08 07:00    38  *******************
+  50    2018-01-08 07:30    38  *******************
+  51    2018-01-08 08:00    37  ******************
+  52    2018-01-08 08:30    37  ******************
+  53    2018-01-08 09:00    38  *******************
+  54    2018-01-08 09:30    37  ******************
+  55    2018-01-08 10:00    38  *******************
+  56    2018-01-08 10:30    39  ********************
+  57    2018-01-08 11:00    37  ******************
+  58    2018-01-08 11:30    38  *******************
+  59    2018-01-08 12:00    38  *******************
+  60    2018-01-08 12:30    39  ********************
+  61    2018-01-08 13:00    39  ********************
+  62    2018-01-08 13:30     ?  -
+  63    2018-01-08 14:00    24  *****
+  64    2018-01-08 14:30    25  ******
+  65    2018-01-08 15:00    35  ****************
+  66    2018-01-08 15:30    37  ******************
+  67    2018-01-08 16:00    38  *******************
+  68    2018-01-08 16:30    37  ******************
+  69    2018-01-08 17:00    38  *******************
+ ...    ..(  2 skipped).    ..  *******************
+  72    2018-01-08 18:30    38  *******************
+  73    2018-01-08 19:00    39  ********************
+  74    2018-01-08 19:30    39  ********************
+  75    2018-01-08 20:00    40  *********************
+ ...    ..(  5 skipped).    ..  *********************
+  81    2018-01-08 23:00    40  *********************
+  82    2018-01-08 23:30    39  ********************
+  83    2018-01-09 00:00     ?  -
+  84    2018-01-09 00:30    23  ****
+  85    2018-01-09 01:00    24  *****
+  86    2018-01-09 01:30    34  ***************
+  87    2018-01-09 02:00    36  *****************
+  88    2018-01-09 02:30    38  *******************
+  89    2018-01-09 03:00    39  ********************
+ ...    ..(  3 skipped).    ..  ********************
+  93    2018-01-09 05:00    39  ********************
+  94    2018-01-09 05:30    38  *******************
+  95    2018-01-09 06:00    39  ********************
+  96    2018-01-09 06:30    39  ********************
+  97    2018-01-09 07:00    40  *********************
+  98    2018-01-09 07:30    39  ********************
+  99    2018-01-09 08:00    40  *********************
+ ...    ..(  2 skipped).    ..  *********************
+ 102    2018-01-09 09:30    40  *********************
+ 103    2018-01-09 10:00     ?  -
+ 104    2018-01-09 10:30    22  ***
+ 105    2018-01-09 11:00    22  ***
+ 106    2018-01-09 11:30    34  ***************
+ 107    2018-01-09 12:00    35  ****************
+ 108    2018-01-09 12:30    36  *****************
+ 109    2018-01-09 13:00    37  ******************
+ 110    2018-01-09 13:30     ?  -
+ 111    2018-01-09 14:00    38  *******************
+ ...    ..(  2 skipped).    ..  *******************
+ 114    2018-01-09 15:30    38  *******************
+ 115    2018-01-09 16:00    37  ******************
+ 116    2018-01-09 16:30    37  ******************
+ 117    2018-01-09 17:00    38  *******************
+ 118    2018-01-09 17:30    38  *******************
+ 119    2018-01-09 18:00    39  ********************
+ 120    2018-01-09 18:30    39  ********************
+ 121    2018-01-09 19:00    38  *******************
+ ...    ..(  2 skipped).    ..  *******************
+ 124    2018-01-09 20:30    38  *******************
+ 125    2018-01-09 21:00     ?  -
+ 126    2018-01-09 21:30    21  **
+ 127    2018-01-09 22:00    22  ***
+   0    2018-01-09 22:30    33  **************
+   1    2018-01-09 23:00    35  ****************
+   2    2018-01-09 23:30    35  ****************
+   3    2018-01-10 00:00    34  ***************
+   4    2018-01-10 00:30    35  ****************
+   5    2018-01-10 01:00    36  *****************
+   6    2018-01-10 01:30    36  *****************
+   7    2018-01-10 02:00    35  ****************
+   8    2018-01-10 02:30    36  *****************
+   9    2018-01-10 03:00    36  *****************
+  10    2018-01-10 03:30    37  ******************
+  11    2018-01-10 04:00    37  ******************
+  12    2018-01-10 04:30    36  *****************
+  13    2018-01-10 05:00    37  ******************
+ ...    ..(  2 skipped).    ..  ******************
+  16    2018-01-10 06:30    37  ******************
+  17    2018-01-10 07:00    36  *****************
+  18    2018-01-10 07:30    36  *****************
+  19    2018-01-10 08:00     ?  -
+  20    2018-01-10 08:30    19  -
+  21    2018-01-10 09:00    20  *
+  22    2018-01-10 09:30    31  ************
+  23    2018-01-10 10:00    33  **************
+  24    2018-01-10 10:30    34  ***************
+  25    2018-01-10 11:00    35  ****************
+  26    2018-01-10 11:30    36  *****************
+ ...    ..(  2 skipped).    ..  *****************
+  29    2018-01-10 13:00    36  *****************
+  30    2018-01-10 13:30    37  ******************
+  31    2018-01-10 14:00    37  ******************
+  32    2018-01-10 14:30    36  *****************
+
+SCT Error Recovery Control command not supported
+
+Device Statistics (GP/SMART Log 0x04) not supported
+
+SATA Phy Event Counters (GP Log 0x11)
+ID      Size     Value  Description
+0x000a  2            2  Device-to-host register FISes sent due to a COMRESET
+0x0001  2            0  Command failed due to ICRC error
+0x0003  2            0  R_ERR response for device-to-host data FIS
+0x0004  2            0  R_ERR response for host-to-device data FIS
+0x0006  2            0  R_ERR response for device-to-host non-data FIS
+0x0007  2            0  R_ERR response for host-to-device non-data FIS
+$~~@#!#@~~$
+{
+
+		"fields": {
+				"host_domain_id":    "NOTNULL",
+				"cluster_domain_id": "NOTNULL",
+				"1_raw":             "int64(102950864)",
+				"3_raw":             "int64(0)",
+				"4_raw":             "int64(837)",
+				"5_raw":             "int64(0)",
+				"7_raw":             "int64(5147294377)",
+				"9_raw":             "int64(10344)",
+				"10_raw":            "int64(0)",
+				"12_raw":            "int64(404)",
+				"184_raw":           "int64(0)",
+				"187_raw":           "int64(0)",
+				"188_raw":           "int64(4295032838)",
+				"189_raw":           "int64(0)",
+				"190_raw":           "int64(37)",
+				"191_raw":           "int64(8)",
+				"192_raw":           "int64(40)",
+				"193_raw":           "int64(291898)",
+				"194_raw":           "int64(37)",
+				"196_raw":           "int64(9530)",
+				"197_raw":           "int64(0)",
+				"198_raw":           "int64(0)",
+				"199_raw":           "int64(0)",
+				"240_raw":           "int64(9530)",
+				"241_raw":           "int64(3444509889)",
+				"242_raw":           "int64(1078956071)",
+				"254_raw":           "int64(0)",
+				"CurrentDriveTemperature_raw":"int64(37)"
+		},
+
+		"tags": {
+				"disk_name":   "sda",
+				"primary_key": "NOTNULL",
+				"disk_domain_id":    "5000c50069fcbd0a",
+				"disk_wwn":    "5000c50069fcbd0a"
+		}
+}

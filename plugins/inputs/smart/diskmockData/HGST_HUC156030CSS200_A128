@@ -1,0 +1,143 @@
+{
+{
+}
+}
+$~~@#!#@~~$
+/dev/sdb -d scsi # /dev/sdb, SCSI device
+$~~@#!#@~~$
+smartctl 6.2 2017-02-27 r4394 [x86_64-linux-3.10.0-693.2.2.el7.x86_64] (local build)
+Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Vendor:               HGST
+Product:              HUC156030CSS200
+Revision:             A128
+User Capacity:        300,069,052,416 bytes [300 GB]
+Logical block size:   512 bytes
+Logical block provisioning type unreported, LBPME=0, LBPRZ=0
+Rotation Rate:        15030 rpm
+Form Factor:          2.5 inches
+Logical Unit id:      0x5000cca045011558
+Serial number:        0TV0LGLJ
+Device type:          disk
+Transport protocol:   SAS
+Local Time is:        Tue Jan  9 23:20:23 2018 PST
+SMART support is:     Available - device has SMART capability.
+SMART support is:     Enabled
+Temperature Warning:  Enabled
+Read Cache is:        Enabled
+Writeback Cache is:   Enabled
+
+=== START OF READ SMART DATA SECTION ===
+SMART Health Status: OK
+
+Current Drive Temperature:     36 C
+Drive Trip Temperature:        85 C
+
+Manufactured in week 12 of year 2014
+Specified cycle count over device lifetime:  50000
+Accumulated start-stop cycles:  4562
+Specified load-unload count over device lifetime:  600000
+Accumulated load-unload cycles:  5215
+Elements in grown defect list: 0
+
+Vendor (Seagate) cache information
+  Blocks sent to initiator = 4061847946788864
+
+Error counter log:
+           Errors Corrected by           Total   Correction     Gigabytes    Total
+               ECC          rereads/    errors   algorithm      processed    uncorrected
+           fast | delayed   rewrites  corrected  invocations   [10^9 bytes]  errors
+read:          0       24         0        24     531461       3641.269           0
+write:         0        3         0         3     320067       3801.836           0
+verify:        0      609         0       609     220969         35.452           0
+
+Non-medium error count:       12
+
+No self-tests have been logged
+
+Background scan results log
+  Status: waiting until BMS interval timer expires
+    Accumulated power on time, hours:minutes 8541:15 [512475 minutes]
+    Number of background scans performed: 105,  scan progress: 0.00%
+    Number of background medium scans performed: 105
+
+Protocol Specific port log page for SAS SSP
+relative target port id = 1
+  generation code = 3
+  number of phys = 1
+  phy identifier = 0
+    attached device type: end device
+    attached reason: unknown
+    reason: unknown
+    negotiated logical link rate: phy enabled; 3 Gbps
+    attached initiator port: ssp=1 stp=1 smp=1
+    attached target port: ssp=0 stp=0 smp=0
+    SAS address = 0x5000cca045011559
+    attached SAS address = 0x5842b2b03679cb00
+    attached phy identifier = 0
+    Invalid DWORD count = 20
+    Running disparity error count = 20
+    Loss of DWORD synchronization = 5
+    Phy reset problem = 0
+    Phy event descriptors:
+     Invalid word count: 20
+     Running disparity error count: 20
+     Loss of dword synchronization count: 5
+     Phy reset problem count: 0
+relative target port id = 2
+  generation code = 3
+  number of phys = 1
+  phy identifier = 1
+    attached device type: no device attached
+    attached reason: unknown
+    reason: power on
+    negotiated logical link rate: phy enabled; unknown
+    attached initiator port: ssp=0 stp=0 smp=0
+    attached target port: ssp=0 stp=0 smp=0
+    SAS address = 0x5000cca04501155a
+    attached SAS address = 0x0
+    attached phy identifier = 0
+    Invalid DWORD count = 0
+    Running disparity error count = 0
+    Loss of DWORD synchronization = 0
+    Phy reset problem = 0
+    Phy event descriptors:
+     Invalid word count: 0
+     Running disparity error count: 0
+     Loss of dword synchronization count: 0
+     Phy reset problem count: 0
+
+$~~@#!#@~~$
+{
+
+		"fields": {
+				"host_domain_id":                               "NOTNULL",
+				"cluster_domain_id": 				"NOTNULL",
+				"CurrentDriveTemperature_raw":                  "int64(36)",
+				"DriveTripTemperature_raw":                     "int64(85)",
+				"ElementsInGrownDefectList_raw":                "int64(0)",
+				"ErrorsCorrectedbyECCFastRead_raw":             "int64(0)",
+				"ErrorsCorrectedbyECCDelayedRead_raw":          "int64(24)",
+				"ErrorCorrectedByRereadsRewritesRead_raw":      "int64(0)",
+				"TotalErrorsCorrectedRead_raw":                 "int64(24)",
+				"CorrectionAlgorithmInvocationsRead_raw":       "int64(531461)",
+				"GigaBytesProcessedRead_raw":                   "float64(3641.269)",
+				"TotalUncorrectedErrorsRead_raw":               "int64(0)",
+				"ErrorsCorrectedbyECCFastWrite_raw":            "int64(0)",
+				"ErrorsCorrectedbyECCDelayedWrite_raw":         "int64(3)",
+				"ErrorCorrectedByRereadsRewritesWrite_raw":     "int64(0)",
+				"TotalErrorsCorrectedWrite_raw":                "int64(3)",
+				"CorrectionAlgorithmInvocationsWrite_raw":      "int64(320067)",
+				"GigaBytesProcessedWrite_raw":                  "float64(3801.836)",
+				"TotalUncorrectedErrorsWrite_raw":              "int64(0)",
+				"9_raw":              				"int64(8541)"
+		},
+
+		"tags": {
+				"disk_name":		"sdb",
+				"primary_key":		"NOTNULL",
+				"disk_domain_id":	"5000cca045011558",
+				"disk_wwn":		"5000cca045011558"
+		}
+}

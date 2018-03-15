@@ -9,6 +9,8 @@ import (
 	"time"
 
 	"github.com/influxdata/telegraf"
+	"github.com/influxdata/telegraf/dcai"
+	"github.com/influxdata/telegraf/dcai/event"
 	"github.com/influxdata/telegraf/internal"
 	"github.com/influxdata/telegraf/internal/config"
 	"github.com/influxdata/telegraf/internal/models"
@@ -21,24 +23,31 @@ type Agent struct {
 }
 
 // NewAgent returns an Agent struct based off the given Config
-func NewAgent(config *config.Config) (*Agent, error) {
+func NewAgent(config *config.Config, nextver string, ver string, commit string, branch string) (*Agent, error) {
 	a := &Agent{
 		Config: config,
 	}
 
-	if !a.Config.Agent.OmitHostname {
-		if a.Config.Agent.Hostname == "" {
-			hostname, err := os.Hostname()
-			if err != nil {
-				return nil, err
-			}
-
-			a.Config.Agent.Hostname = hostname
+	//	if !a.Config.Agent.OmitHostname {
+	if a.Config.Agent.Hostname == "" {
+		hostname, err := os.Hostname()
+		if err != nil {
+			return nil, err
 		}
 
-		config.Tags["host"] = a.Config.Agent.Hostname
+		a.Config.Agent.Hostname = hostname
 	}
+	config.Tags["agenthost"] = a.Config.Agent.Hostname
 
+	da, err := dcai.NewDcaiAgent(a.Config, nextver, ver, commit, branch)
+	if err != nil {
+		return nil, err
+	}
+	ah, err := dcai.FetchAgentHostConfig(da.Agenttype, da.TelegrafConfig.Agent.DmidecodePath)
+	if err != nil {
+		return nil, err
+	}
+	config.Tags["agenthost_domain_id"] = ah.DomainID()
 	return a, nil
 }
 
@@ -366,6 +375,16 @@ func (a *Agent) Run(shutdown chan struct{}) error {
 
 	now := time.Now()
 
+	// send first agent heartbeat
+	inputs := a.Config.Inputs
+	if inputs != nil {
+		startAgentInput := inputs[0]
+		acc := NewAccumulator(startAgentInput, metricC)
+		err := event.SendFirstAgentHeartbeat(acc)
+		if err != nil {
+			log.Printf("E! Send first agent heartbeat error %s\n", err.Error())
+		}
+	}
 	// Start all ServicePlugins
 	for _, input := range a.Config.Inputs {
 		input.SetDefaultTags(a.Config.Tags)

@@ -1,0 +1,54 @@
+[global_tags]
+
+[agent]
+  interval = "600s"
+  round_interval = false
+  metric_batch_size = 1000
+  metric_buffer_limit = 10000
+  collection_jitter = "0s"
+  flush_interval = "10s"
+  flush_jitter = "0s"
+  precision = "1ns"
+  debug = false
+  quiet = false
+  logfile = ""
+  hostname = ""
+  omit_hostname = false
+  sai_cluster_domain_id = "dpCluster"
+  sai_cluster_name = "DiskProphet for Lab Test"
+  agent_type = "vmware"
+  dmidecode_path = "DMIDECODEPATH"
+
+###############################################################################
+#                            OUTPUT PLUGINS                                   #
+###############################################################################
+
+# Configuration for influxdb server to send metrics to
+[[outputs.influxdb]]
+  urls = ["http://INFLUXDB_IP:INFLUXDB_PORT"]
+  database = "telegraf"
+  retention_policy = ""
+  write_consistency = "any"
+  timeout = "60s"
+
+###############################################################################
+#                            INPUT PLUGINS                                    #
+###############################################################################
+
+# # Collect metrics from VMware vSphere
+[[inputs.vsphere]]
+  server = "VCENTER_IP"
+  username = "VCENTER_USER"
+  password = "VCENTER_PASSWORD"
+  insecure =  true
+
+# # Collect metrics from vsphere storage devices supporting S.M.A.R.T.
+[[inputs.vspheresmart]]
+  vspheres = [
+        VSPHERE_CONF
+    ]
+
+# # Read vCenter topology information
+[[inputs.vspheretpgy]]
+  urls = [["VCENTER_IP", "VCENTER_IP", "VCENTER_USER", "VCENTER_PASSWORD"]]
+

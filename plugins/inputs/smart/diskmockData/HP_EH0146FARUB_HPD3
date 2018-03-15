@@ -1,0 +1,158 @@
+{
+{
+}
+}
+$~~@#!#@~~$
+/dev/sg1 -d cciss,2
+$~~@#!#@~~$
+smartctl 6.2 2013-07-26 r3841 [x86_64-linux-4.4.0-24-generic] (local build)
+Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
+
+/dev/sda [cciss_disk_02] [SCSI]: Device open changed type from 'sat,auto+cciss' to 'cciss'
+=== START OF INFORMATION SECTION ===
+Vendor:               HP
+Product:              EH0146FARUB
+Revision:             HPD3
+User Capacity:        146,815,737,856 bytes [146 GB]
+Logical block size:   512 bytes
+Rotation Rate:        15000 rpm
+Form Factor:          2.5 inches
+Logical Unit id:      0x500000e113107c00
+Serial number:        D301P9B047PR0947
+Device type:          disk
+Transport protocol:   SAS
+Local Time is:        Thu Feb 22 14:48:41 2018 CST
+SMART support is:     Available - device has SMART capability.
+SMART support is:     Enabled
+Temperature Warning:  Enabled
+Read Cache is:        Enabled
+Writeback Cache is:   Disabled
+
+=== START OF READ SMART DATA SECTION ===
+SMART Health Status: HARDWARE IMPENDING FAILURE TOO MANY BLOCK REASSIGNS [asc=5d, ascq=14]
+
+Current Drive Temperature:     37 C
+Drive Trip Temperature:        65 C
+
+Manufactured in week 47 of year 2009
+Specified cycle count over device lifetime:  50000
+Accumulated start-stop cycles:  106
+Elements in grown defect list: 9681
+
+Error counter log:
+           Errors Corrected by           Total   Correction     Gigabytes    Total
+               ECC          rereads/    errors   algorithm      processed    uncorrected
+           fast | delayed   rewrites  corrected  invocations   [10^9 bytes]  errors
+read:          0    44798         0      6885          0    3657744.570         222
+write:         0        0         0         0          0       7934.760           0
+
+Non-medium error count:     5795
+
+SMART Self-test log
+Num  Test              Status                 segment  LifeTime  LBA_first_err [SK ASC ASQ]
+     Description                              number   (hours)
+# 1  Background long   Completed                   -   56324                 - [-   -    -]
+Long (extended) Self Test duration: 1394 seconds [23.2 minutes]
+
+Background scan results log
+  Status: halted due to fatal error
+    Accumulated power on time, hours:minutes 56853:51 [3411231 minutes]
+    Number of background scans performed: 2182,  scan progress: 91.49%
+    Number of background medium scans performed: 0
+
+   #  when        lba(hex)    [sk,asc,ascq]    reassign_status
+   1 16174:46  000000000962afa1  [b,15,1]   Reserved [0x0]
+   2 20725:03  000000000d48f4f2  [b,15,1]   Reserved [0x0]
+   3 28602:28  00000000020d5dae  [b,15,1]   Reserved [0x0]
+   4 53727:33  000000000c1d763e  [b,15,1]   Reserved [0x0]
+
+Protocol Specific port log page for SAS SSP
+relative target port id = 1
+  generation code = 12
+  number of phys = 1
+  phy identifier = 0
+    attached device type: end device
+    attached reason: unknown
+    reason: hard reset
+    negotiated logical link rate: phy enabled; 6 Gbps
+    attached initiator port: ssp=1 stp=1 smp=1
+    attached target port: ssp=0 stp=0 smp=0
+    SAS address = 0x500000e113107c02
+    attached SAS address = 0x500143801821fc80
+    attached phy identifier = 3
+    Invalid DWORD count = 84
+    Running disparity error count = 84
+    Loss of DWORD synchronization = 21
+    Phy reset problem = 0
+    Phy event descriptors:
+     Invalid word count: 84
+     Running disparity error count: 84
+     Loss of dword synchronization count: 21
+     Phy reset problem count: 0
+     Elasticity buffer overflow count: 0
+     Received abandon-class OPEN_REJECT count: 0
+     Transmitted BREAK count: 0
+     Received BREAK count: 0
+     Transmitted SSP frame error count: 1
+     Received SSP frame error count: 0
+relative target port id = 2
+  generation code = 12
+  number of phys = 1
+  phy identifier = 1
+    attached device type: no device attached
+    attached reason: unknown
+    reason: unknown
+    negotiated logical link rate: phy enabled; unknown
+    attached initiator port: ssp=0 stp=0 smp=0
+    attached target port: ssp=0 stp=0 smp=0
+    SAS address = 0x500000e113107c03
+    attached SAS address = 0x0
+    attached phy identifier = 0
+    Invalid DWORD count = 0
+    Running disparity error count = 0
+    Loss of DWORD synchronization = 0
+    Phy reset problem = 0
+    Phy event descriptors:
+     Invalid word count: 0
+     Running disparity error count: 0
+     Loss of dword synchronization count: 0
+     Phy reset problem count: 0
+     Elasticity buffer overflow count: 0
+     Received abandon-class OPEN_REJECT count: 0
+     Transmitted BREAK count: 0
+     Received BREAK count: 0
+     Transmitted SSP frame error count: 0
+     Received SSP frame error count: 0
+$~~@#!#@~~$
+{
+
+		"fields": {
+				"host_domain_id":    "NOTNULL",
+				"cluster_domain_id": "NOTNULL",
+				"CurrentDriveTemperature_raw":                  "int64(37)",
+				"DriveTripTemperature_raw":                     "int64(65)",
+				"ElementsInGrownDefectList_raw":                "int64(9681)",
+				"ErrorsCorrectedbyECCFastRead_raw":             "int64(0)",
+				"ErrorsCorrectedbyECCDelayedRead_raw":          "int64(44798)",
+				"ErrorCorrectedByRereadsRewritesRead_raw":      "int64(0)",
+				"TotalErrorsCorrectedRead_raw":                 "int64(6885)",
+				"CorrectionAlgorithmInvocationsRead_raw":       "int64(0)",
+				"GigaBytesProcessedRead_raw":                   "float64(3657744.570)",
+				"TotalUncorrectedErrorsRead_raw":               "int64(222)",
+				"ErrorsCorrectedbyECCFastWrite_raw":            "int64(0)",
+				"ErrorsCorrectedbyECCDelayedWrite_raw":         "int64(0)",
+				"ErrorCorrectedByRereadsRewritesWrite_raw":     "int64(0)",
+				"TotalErrorsCorrectedWrite_raw":                "int64(0)",
+				"CorrectionAlgorithmInvocationsWrite_raw":      "int64(0)",
+				"GigaBytesProcessedWrite_raw":                  "float64(7934.760)",
+				"TotalUncorrectedErrorsWrite_raw":              "int64(0)",
+				"9_raw":              				"int64(56853)"
+		},
+
+		"tags": {
+				"disk_name":   "HP-2",
+				"primary_key": "NOTNULL",
+				"disk_domain_id":    "500000e113107c00",
+				"disk_wwn":    "500000e113107c00"
+		}
+}

@@ -7,11 +7,21 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/influxdata/telegraf/dcai"
+	"github.com/influxdata/telegraf/internal/config"
 	"github.com/influxdata/telegraf/plugins/outputs/influxdb/client"
 	"github.com/influxdata/telegraf/testutil"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+)
+
+var (
+	mockConfig = &config.Config{
+		Agent: &config.AgentConfig{
+			AgentType: "linux",
+		},
+	}
 )
 
 func TestIdentQuoting(t *testing.T) {
@@ -50,9 +60,11 @@ func TestIdentQuoting(t *testing.T) {
 
 func TestUDPInflux(t *testing.T) {
 	i := InfluxDB{
-		URLs: []string{"udp://localhost:8089"},
+		URLs:       []string{"udp://localhost:8089"},
+		UDPPayload: 1024,
 	}
 
+	dcai.NewDcaiAgent(mockConfig, "", "", "", "")
 	err := i.Connect()
 	require.NoError(t, err)
 	err = i.Write(testutil.MockMetrics())
@@ -89,6 +101,7 @@ func TestHTTPInflux(t *testing.T) {
 	i.Database = "test"
 	i.UserAgent = "telegraf"
 
+	dcai.NewDcaiAgent(mockConfig, "", "", "", "")
 	err := i.Connect()
 	require.NoError(t, err)
 	err = i.Write(testutil.MockMetrics())
@@ -171,6 +184,7 @@ func TestHTTPError_DatabaseNotFound(t *testing.T) {
 		Database: "test",
 	}
 
+	dcai.NewDcaiAgent(mockConfig, "", "", "", "")
 	err := i.Connect()
 	require.NoError(t, err)
 	err = i.Write(testutil.MockMetrics())
@@ -272,6 +286,7 @@ func TestHTTPError_WriteErrors(t *testing.T) {
 				Database: "test",
 			}
 
+			dcai.NewDcaiAgent(mockConfig, "", "", "", "")
 			err := influx.Connect()
 			require.NoError(t, err)
 			err = influx.Write(testutil.MockMetrics())

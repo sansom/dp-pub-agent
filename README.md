@@ -51,6 +51,43 @@ which is installed by the Makefile if you don't have it already.
 4. Run `cd $GOPATH/src/github.com/influxdata/telegraf`
 5. Run `make`
 
+### From Phabricator source repository:
+
+Telegraf requires golang version 1.8+, the Makefile requires GNU make.
+
+Dependencies are managed with [gdm](https://github.com/sparrc/gdm),
+which is installed by the Makefile if you don't have it already.
+
+1. [Install Go](https://golang.org/doc/install)
+2. [Setup your GOPATH](https://golang.org/doc/code.html#GOPATH)
+3. Run `git clone ssh://git@phabricator.prophetservice.com/source/dc-aiagent.git $GOPATH/src/github.com/influxdata/telegraf`
+4. Run `cd $GOPATH/src/github.com/influxdata/telegraf`
+5. Run `make dcaiagent`. This will build binaries in output folder.
+
+#### Make installation packages for every supported platform
+
+This will create deb, rpm, and tar files for windows, linux, freebsd, and vmware platforms.
+Note: Currently vmware platform means Linux OS. We install the packages on a Linux host and monitor vSphere servers through SDK.
+(pre-install: docker/ ruby/ fpm/ rpm)
+ 
+1. Run `make package`. The generated installation packages are at build folder.
+
+Note: for vmware installation package:
+
+ - When you done the installation, please create collect_smart.json and vsphere-influxdb-go.json in /opt/prophetstor/dcaiagent/conf folder according to your vCenter environment. (You can reference the template files under the same folder.
+
+#### Make docker image
+
+1. Type `make docker-image` to create a docker image in the system. This docker image is based on debian stretch docker image.
+2. Type `docker image save -o telegraf_docker_image.tar telegraf:<Tag>` to export the docker image.
+
+Note: docker environment is required.
+Note: add the user who is building docker image to docker group.
+
+#### To run telegraf docker image
+
+Type `docker run --privileged <image ID>` to start the docker image. And port 8125/udp 8092/udp and 8094 are required.
+
 ### Nightly Builds
 
 These builds are generated from the master branch:

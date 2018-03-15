@@ -13,6 +13,7 @@ import (
 	"syscall"
 
 	"github.com/influxdata/telegraf/agent"
+	"github.com/influxdata/telegraf/dcai"
 	"github.com/influxdata/telegraf/internal/config"
 	"github.com/influxdata/telegraf/logger"
 	_ "github.com/influxdata/telegraf/plugins/aggregators/all"
@@ -35,6 +36,7 @@ var fConfig = flag.String("config", "", "configuration file to load")
 var fConfigDirectory = flag.String("config-directory", "",
 	"directory containing additional *.conf files")
 var fVersion = flag.Bool("version", false, "display the version")
+var fagentinfo = flag.Bool("info", false, "display agent information")
 var fSampleConfig = flag.Bool("sample-config", false,
 	"print out full sample configuration")
 var fPidfile = flag.String("pidfile", "", "file to write our pid to")
@@ -82,6 +84,7 @@ The commands & flags are:
 
   config              print out full sample configuration to stdout
   version             print the version to stdout
+  info                print agent information to stdout
 
   --config <file>     configuration file to load
   --test              gather metrics once, print them to stdout, and exit
@@ -160,7 +163,7 @@ func reloadLoop(
 				c.Agent.Interval.Duration)
 		}
 
-		ag, err := agent.NewAgent(c)
+		ag, err := agent.NewAgent(c, nextVersion, version, commit, branch)
 		if err != nil {
 			log.Fatal("E! " + err.Error())
 		}
@@ -270,6 +273,28 @@ func displayVersion() string {
 	return "v" + version
 }
 
+func displayAgentInfo() {
+	c := config.NewConfig()
+	err := c.LoadConfig(*fConfig)
+	if err != nil {
+		log.Fatal("E! " + err.Error())
+	}
+
+	da, err := dcai.NewDcaiAgent(c, nextVersion, version, commit, branch)
+	if err != nil {
+		log.Fatal("E! " + err.Error())
+	}
+	ah, err := dcai.FetchAgentHostConfig(da.Agenttype, da.TelegrafConfig.Agent.DmidecodePath)
+	if err != nil {
+		log.Fatal("E! " + err.Error())
+	}
+	fmt.Printf("saicluster_name=%s\n", da.GetSaiClusterName())
+	fmt.Printf("saicluster_domain_id=%s\n", da.GetSaiClusterDomainId())
+	fmt.Printf("agenthost=%s\n", ah.Hostname())
+	fmt.Printf("agenthost_domain_id=%s\n", ah.DomainID())
+	fmt.Printf("agent_version=Telegraf %s (git: %s %s)\n", displayVersion(), branch, commit)
+}
+
 func main() {
 	flag.Usage = func() { usageExit(0) }
 	flag.Parse()
@@ -321,6 +346,9 @@ func main() {
 				processorFilters,
 			)
 			return
+		case "info":
+			displayAgentInfo()
+			return
 		}
 	}
 
@@ -340,6 +368,9 @@ func main() {
 		return
 	case *fVersion:
 		fmt.Printf("Telegraf %s (git: %s %s)\n", displayVersion(), branch, commit)
+		return
+	case *fagentinfo:
+		displayAgentInfo()
 		return
 	case *fSampleConfig:
 		config.PrintSampleConfig(

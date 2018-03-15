@@ -6,44 +6,23 @@ import (
 	"regexp"
 	"strconv"
 	"strings"
-	"sync"
 	"syscall"
-	"time"
 
 	"github.com/influxdata/telegraf"
-	"github.com/influxdata/telegraf/internal"
+	"github.com/influxdata/telegraf/dcai"
+	"github.com/influxdata/telegraf/dcai/event"
+	"github.com/influxdata/telegraf/dcai/hardware/disk"
+	"github.com/influxdata/telegraf/dcai/topology/host"
+	"github.com/influxdata/telegraf/dcai/type"
+	"github.com/influxdata/telegraf/dcai/util"
 	"github.com/influxdata/telegraf/plugins/inputs"
 )
 
+const SMARTCTL_CMD_TIMEOUT_SECOND = 10
+
 var (
-	execCommand = exec.Command // execCommand is used to mock commands in tests.
-
-	// Device Model:     APPLE SSD SM256E
-	modelInInfo = regexp.MustCompile("^Device Model:\\s+(.*)$")
-	// Serial Number:    S0X5NZBC422720
-	serialInInfo = regexp.MustCompile("^Serial Number:\\s+(.*)$")
-	// LU WWN Device Id: 5 002538 655584d30
-	wwnInInfo = regexp.MustCompile("^LU WWN Device Id:\\s+(.*)$")
-	// User Capacity:    251,000,193,024 bytes [251 GB]
-	usercapacityInInfo = regexp.MustCompile("^User Capacity:\\s+([0-9,]+)\\s+bytes.*$")
-	// SMART support is: Enabled
-	smartEnabledInInfo = regexp.MustCompile("^SMART support is:\\s+(\\w+)$")
-	// SMART overall-health self-assessment test result: PASSED
-	// PASSED, FAILED, UNKNOWN
-	smartOverallHealth = regexp.MustCompile("^SMART overall-health self-assessment test result:\\s+(\\w+).*$")
-
-	// ID# ATTRIBUTE_NAME          FLAGS    VALUE WORST THRESH FAIL RAW_VALUE
-	//   1 Raw_Read_Error_Rate     -O-RC-   200   200   000    -    0
-	//   5 Reallocated_Sector_Ct   PO--CK   100   100   000    -    0
-	// 192 Power-Off_Retract_Count -O--C-   097   097   000    -    14716
-	attribute = regexp.MustCompile("^\\s*([0-9]+)\\s(\\S+)\\s+([-P][-O][-S][-R][-C][-K])\\s+([0-9]+)\\s+([0-9]+)\\s+([0-9]+)\\s+([-\\w]+)\\s+([\\w\\+\\.]+).*$")
-
-	deviceFieldIds = map[string]string{
-		"1":   "read_error_rate",
-		"7":   "seek_error_rate",
-		"194": "temp_c",
-		"199": "udma_crc_errors",
-	}
+	execCommand             = util.ExecuteCmdWithTimeout
+	checkSmartctlPermission = util.CheckCmdRootPermission
 )
 
 type Smart struct {
@@ -59,33 +38,16 @@ var sampleConfig = `
   ## Optionally specify the path to the smartctl executable
   # path = "/usr/bin/smartctl"
   #
-  ## On most platforms smartctl requires root access.
-  ## Setting 'use_sudo' to true will make use of sudo to run smartctl.
-  ## Sudo must be configured to to allow the telegraf user to run smartctl
-  ## with out password.
-  # use_sudo = false
-  #
   ## Skip checking disks in this power mode. Defaults to
   ## "standby" to not wake up disks that have stoped rotating.
   ## See --nocheck in the man pages for smartctl.
   ## smartctl version 5.41 and 5.42 have faulty detection of
   ## power mode and might require changing this value to
   ## "never" depending on your disks.
+  ## Defaults to "never"
+  ##
   # nocheck = "standby"
   #
-  ## Gather detailed metrics for each SMART Attribute.
-  ## Defaults to "false"
-  ##
-  # attributes = false
-  #
-  ## Optionally specify devices to exclude from reporting.
-  # excludes = [ "/dev/pass6" ]
-  #
-  ## Optionally specify devices and device type, if unset
-  ## a scan (smartctl --scan) for S.M.A.R.T. devices will
-  ## done and all found will be included except for the
-  ## excluded in excludes.
-  # devices = [ "/dev/ada0 -d atacam" ]
 `
 
 func (m *Smart) SampleConfig() string {
@@ -97,24 +59,37 @@ func (m *Smart) Description() string {
 }
 
 func (m *Smart) Gather(acc telegraf.Accumulator) error {
+	var err error
 	if len(m.Path) == 0 {
-		return fmt.Errorf("smartctl not found: verify that smartctl is installed and that smartctl is in your PATH")
+		m.Path, err = util.GetCmdPathInOsPath("smartctl")
+	} else {
+		err = util.CheckCmdPath(m.Path)
+	}
+	if err != nil {
+		return err
 	}
 
-	devices := m.Devices
-	if len(devices) == 0 {
-		var err error
-		devices, err = m.scan()
-		if err != nil {
-			return err
-		}
+	if _, err := checkSmartctlPermission("smartctl"); err != nil {
+		return err
 	}
 
-	m.getAttributes(acc, devices)
+	a, err := dcai.GetDcaiAgent()
+	if err != nil {
+		return err
+	}
+	h, err := dcai.FetchAgentHostConfig(a.Agenttype, a.TelegrafConfig.Agent.DmidecodePath)
+	if err != nil {
+		return err
+	}
+
+	err = m.getAttributes(acc, a.GetSaiClusterDomainId(), h)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
-// Wrap with sudo
+/*// Wrap with sudo
 func sudo(sudo bool, command string, args ...string) *exec.Cmd {
 	if sudo {
 		return execCommand("sudo", append([]string{"-n", command}, args...)...)
@@ -126,21 +101,24 @@ func sudo(sudo bool, command string, args ...string) *exec.Cmd {
 // Scan for S.M.A.R.T. devices
 func (m *Smart) scan() ([]string, error) {
 
-	cmd := sudo(m.UseSudo, m.Path, "--scan")
+	cmd := sudo(m.UseSudo, m.Path, "--scan-open")
 	out, err := internal.CombinedOutputTimeout(cmd, time.Second*5)
 	if err != nil {
-		return []string{}, fmt.Errorf("failed to run command %s: %s - %s", strings.Join(cmd.Args, " "), err, string(out))
+		return []string{}, fmt.Errorf("failed to run command %s: %s", strings.Join(cmd.Args, " "), err)
 	}
 
 	devices := []string{}
 	for _, line := range strings.Split(string(out), "\n") {
 		dev := strings.Split(line, "#")
+		if dev[0] == "" {
+			continue
+		}
 		if len(dev) > 1 && !excludedDev(m.Excludes, strings.TrimSpace(dev[0])) {
 			devices = append(devices, strings.TrimSpace(dev[0]))
 		}
 	}
 	return devices, nil
-}
+}*/
 
 func excludedDev(excludes []string, deviceLine string) bool {
 	device := strings.Split(deviceLine, " ")
@@ -155,16 +133,16 @@ func excludedDev(excludes []string, deviceLine string) bool {
 }
 
 // Get info and attributes for each S.M.A.R.T. device
-func (m *Smart) getAttributes(acc telegraf.Accumulator, devices []string) {
-
-	var wg sync.WaitGroup
-	wg.Add(len(devices))
-
-	for _, device := range devices {
-		go gatherDisk(acc, m.UseSudo, m.Attributes, m.Path, m.Nocheck, device, &wg)
+func (m *Smart) getAttributes(acc telegraf.Accumulator, saiClDomainID string, h host.HostConfig) error {
+	devices, err := h.GetDisks(m.Path)
+	if err != nil {
+		return err
 	}
 
-	wg.Wait()
+	for _, device := range devices {
+		gatherDisk(acc, saiClDomainID, h, m.UseSudo, m.Attributes, m.Path, m.Nocheck, device)
+	}
+	return nil
 }
 
 // Command line parse errors are denoted by the exit code having the 0 bit set.
@@ -178,109 +156,15 @@ func exitStatus(err error) (int, error) {
 	return 0, err
 }
 
-func gatherDisk(acc telegraf.Accumulator, usesudo, attributes bool, path, nockeck, device string, wg *sync.WaitGroup) {
+func gatherDisk(acc telegraf.Accumulator, saiClDomainID string, h host.HostConfig, usesudo, attributes bool, path, nockeck string, device *disk.DiskInfo) {
 
-	defer wg.Done()
 	// smartctl 5.41 & 5.42 have are broken regarding handling of --nocheck/-n
-	args := []string{"--info", "--health", "--attributes", "--tolerance=verypermissive", "-n", nockeck, "--format=brief"}
-	args = append(args, strings.Split(device, " ")...)
-	cmd := sudo(usesudo, path, args...)
-	out, e := internal.CombinedOutputTimeout(cmd, time.Second*5)
-	outStr := string(out)
 
-	// Ignore all exit statuses except if it is a command line parse error
-	exitStatus, er := exitStatus(e)
-	if er != nil {
-		acc.AddError(fmt.Errorf("failed to run command %s: %s - %s", strings.Join(cmd.Args, " "), e, outStr))
-		return
-	}
+	disk.CollectSmartMetricsBySmartctlOutput(acc, saiClDomainID, h.DomainID(), device.Header, device.SmartctlOutput)
 
-	device_tags := map[string]string{}
-	device_tags["device"] = strings.Split(device, " ")[0]
-	device_fields := make(map[string]interface{})
-	device_fields["exit_status"] = exitStatus
+	event.SendMetricsMonitoring(acc, h, saiClDomainID, fmt.Sprintf("1 point(s) of %s was written to DB", device.GetName()), dcaitype.EventTitleSmartDataSent, dcaitype.LogLevelInfo)
 
-	for _, line := range strings.Split(outStr, "\n") {
-
-		model := modelInInfo.FindStringSubmatch(line)
-		if len(model) > 1 {
-			device_tags["model"] = model[1]
-		}
-
-		serial := serialInInfo.FindStringSubmatch(line)
-		if len(serial) > 1 {
-			device_tags["serial_no"] = serial[1]
-		}
-
-		wwn := wwnInInfo.FindStringSubmatch(line)
-		if len(wwn) > 1 {
-			device_tags["wwn"] = strings.Replace(wwn[1], " ", "", -1)
-		}
-
-		capacity := usercapacityInInfo.FindStringSubmatch(line)
-		if len(capacity) > 1 {
-			device_tags["capacity"] = strings.Replace(capacity[1], ",", "", -1)
-		}
-
-		enabled := smartEnabledInInfo.FindStringSubmatch(line)
-		if len(enabled) > 1 {
-			device_tags["enabled"] = enabled[1]
-		}
-
-		health := smartOverallHealth.FindStringSubmatch(line)
-		if len(health) > 1 {
-			device_fields["health_ok"] = (health[1] == "PASSED")
-		}
-
-		attr := attribute.FindStringSubmatch(line)
-
-		if len(attr) > 1 {
-
-			if attributes {
-				tags := map[string]string{}
-				fields := make(map[string]interface{})
-
-				tags["device"] = strings.Split(device, " ")[0]
-
-				if serial, ok := device_tags["serial_no"]; ok {
-					tags["serial_no"] = serial
-				}
-				if wwn, ok := device_tags["wwn"]; ok {
-					tags["wwn"] = wwn
-				}
-				tags["id"] = attr[1]
-				tags["name"] = attr[2]
-				tags["flags"] = attr[3]
-
-				fields["exit_status"] = exitStatus
-				if i, err := strconv.ParseInt(attr[4], 10, 64); err == nil {
-					fields["value"] = i
-				}
-				if i, err := strconv.ParseInt(attr[5], 10, 64); err == nil {
-					fields["worst"] = i
-				}
-				if i, err := strconv.ParseInt(attr[6], 10, 64); err == nil {
-					fields["threshold"] = i
-				}
-
-				tags["fail"] = attr[7]
-				if val, err := parseRawValue(attr[8]); err == nil {
-					fields["raw_value"] = val
-				}
-
-				acc.AddFields("smart_attribute", fields, tags)
-			}
-
-			// If the attribute matches on the one in deviceFieldIds
-			// save the raw value to a field.
-			if field, ok := deviceFieldIds[attr[1]]; ok {
-				if val, err := parseRawValue(attr[8]); err == nil {
-					device_fields[field] = val
-				}
-			}
-		}
-	}
-	acc.AddFields("smart_device", device_fields, device_tags)
+	disk.CollectSaiDiskBySmartctlOutput(acc, saiClDomainID, h.DomainID(), device.Header, device.SmartctlOutput)
 }
 
 func parseRawValue(rawVal string) (int64, error) {
@@ -327,11 +211,8 @@ func parseInt(str string) int64 {
 
 func init() {
 	m := Smart{}
-	path, _ := exec.LookPath("smartctl")
-	if len(path) > 0 {
-		m.Path = path
-	}
-	m.Nocheck = "standby"
+	m.Nocheck = "never"
+	m.Attributes = true
 
 	inputs.Add("smart", func() telegraf.Input {
 		return &m

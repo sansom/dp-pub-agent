@@ -8,10 +8,11 @@ import (
 	"time"
 
 	"github.com/influxdata/telegraf"
+	"github.com/influxdata/telegraf/dcai/event"
+	saiagent "github.com/influxdata/telegraf/dcai/sai/agent"
 	"github.com/influxdata/telegraf/internal"
 	"github.com/influxdata/telegraf/metric"
 	"github.com/influxdata/telegraf/plugins/outputs"
-
 	"github.com/influxdata/telegraf/plugins/outputs/influxdb/client"
 )
 
@@ -183,6 +184,14 @@ func (i *InfluxDB) Description() string {
 // Write will choose a random server in the cluster to write to until a successful write
 // occurs, logging each unsuccessful. If all servers fail, return error.
 func (i *InfluxDB) Write(metrics []telegraf.Metric) error {
+	if err := event.AddIntervalAgentHeartbeatMetric(&metrics); err != nil {
+		return err
+	}
+
+	if err := saiagent.AddSaiAgentMetric(&metrics); err != nil {
+		return err
+	}
+
 	r := metric.NewReader(metrics)
 
 	// This will get set to nil if a successful write occurs

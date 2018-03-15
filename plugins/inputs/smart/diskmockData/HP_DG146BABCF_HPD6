@@ -1,0 +1,125 @@
+{
+{
+}
+}
+$~~@#!#@~~$
+/dev/sde -d scsi # /dev/sde, SCSI device
+$~~@#!#@~~$
+smartctl 6.2 2017-02-27 r4394 [x86_64-linux-3.10.0-693.2.2.el7.x86_64] (local build)
+Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Vendor:               HP
+Product:              DG146BABCF
+Revision:             HPD6
+User Capacity:        146,815,737,856 bytes [146 GB]
+Logical block size:   512 bytes
+Rotation Rate:        10025 rpm
+Logical Unit id:      0x500000e01de45ac0
+Serial number:        BS05P8A0KPT40844
+Device type:          disk
+Transport protocol:   SAS
+Local Time is:        Tue Jan  9 23:33:21 2018 PST
+SMART support is:     Available - device has SMART capability.
+SMART support is:     Enabled
+Temperature Warning:  Enabled
+Read Cache is:        Enabled
+Writeback Cache is:   Enabled
+
+=== START OF READ SMART DATA SECTION ===
+
+SMART Health Status: OK
+
+Current Drive Temperature:     34 C
+Drive Trip Temperature:        65 C
+
+Manufactured in week 44 of year 2008
+Specified cycle count over device lifetime:  50000
+Accumulated start-stop cycles:  138
+Elements in grown defect list: 0
+
+Error counter log:
+           Errors Corrected by           Total   Correction     Gigabytes    Total
+               ECC          rereads/    errors   algorithm      processed    uncorrected
+           fast | delayed   rewrites  corrected  invocations   [10^9 bytes]  errors
+read:          0        0         0         0          0          0.000           0
+write:         0        0         0         0          0          0.000           0
+
+Non-medium error count:      172
+
+No self-tests have been logged
+
+Background scan results log
+  Status: waiting until BMS interval timer expires
+    Accumulated power on time, hours:minutes 40662:30 [2439750 minutes]
+    Number of background scans performed: 1546,  scan progress: 0.00%
+    Number of background medium scans performed: 0
+
+Protocol Specific port log page for SAS SSP
+relative target port id = 1
+  generation code = 0
+  number of phys = 1
+  phy identifier = 0
+    attached device type: end device
+    attached reason: unknown
+    reason: unknown
+    negotiated logical link rate: phy enabled; 3 Gbps
+    attached initiator port: ssp=1 stp=1 smp=1
+    attached target port: ssp=0 stp=0 smp=0
+    SAS address = 0x500000e01de45ac2
+    attached SAS address = 0x5842b2b03679cb03
+    attached phy identifier = 3
+    Invalid DWORD count = 0
+    Running disparity error count = 0
+    Loss of DWORD synchronization = 0
+    Phy reset problem = 0
+relative target port id = 2
+  generation code = 0
+  number of phys = 1
+  phy identifier = 1
+    attached device type: no device attached
+    attached reason: unknown
+    reason: unknown
+    negotiated logical link rate: phy enabled; unknown
+    attached initiator port: ssp=0 stp=0 smp=0
+    attached target port: ssp=0 stp=0 smp=0
+    SAS address = 0x500000e01de45ac3
+    attached SAS address = 0x0
+    attached phy identifier = 0
+    Invalid DWORD count = 0
+    Running disparity error count = 0
+    Loss of DWORD synchronization = 0
+    Phy reset problem = 0
+$~~@#!#@~~$
+{
+
+		"fields": {
+				"host_domain_id":                               "NOTNULL",
+				"cluster_domain_id":                            "NOTNULL",
+				"CurrentDriveTemperature_raw":                  "int64(34)",
+				"DriveTripTemperature_raw":                     "int64(65)",
+				"ElementsInGrownDefectList_raw":                "int64(0)",
+				"ErrorsCorrectedbyECCFastRead_raw":             "int64(0)",
+				"ErrorsCorrectedbyECCDelayedRead_raw":          "int64(0)",
+				"ErrorCorrectedByRereadsRewritesRead_raw":      "int64(0)",
+				"TotalErrorsCorrectedRead_raw":                 "int64(0)",
+				"CorrectionAlgorithmInvocationsRead_raw":       "int64(0)",
+				"GigaBytesProcessedRead_raw":                   "float64(0.000)",
+				"TotalUncorrectedErrorsRead_raw":               "int64(0)",
+				"ErrorsCorrectedbyECCFastWrite_raw":            "int64(0)",
+				"ErrorsCorrectedbyECCDelayedWrite_raw":         "int64(0)",
+				"ErrorCorrectedByRereadsRewritesWrite_raw":     "int64(0)",
+				"TotalErrorsCorrectedWrite_raw":                "int64(0)",
+				"CorrectionAlgorithmInvocationsWrite_raw":      "int64(0)",
+				"GigaBytesProcessedWrite_raw":                  "float64(0.000)",
+				"TotalUncorrectedErrorsWrite_raw":              "int64(0)",
+				"9_raw":              				"int64(40662)"
+		},
+
+		"tags": {
+				"disk_name":		"sde",
+				"primary_key":		"NOTNULL",
+				"disk_domain_id":                               "500000e01de45ac0",
+				"disk_wwn":		"500000e01de45ac0"
+		}
+}

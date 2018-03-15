@@ -1,0 +1,76 @@
+[global_tags]
+
+[agent]
+  interval = "600s"
+  round_interval = false
+  metric_batch_size = 1000
+  metric_buffer_limit = 10000
+  collection_jitter = "0s"
+  flush_interval = "10s"
+  flush_jitter = "0s"
+  precision = "1us"
+  debug = false
+  quiet = false
+  logfile = ""
+  hostname = ""
+  omit_hostname = false
+  sai_cluster_domain_id = "dpCluster"
+  sai_cluster_name = "DiskProphet for Lab Test"
+  agent_type = "linux"
+  dmidecode_path = "DMIDECODEPATH"
+
+###############################################################################
+#                            OUTPUT PLUGINS                                   #
+###############################################################################
+
+# Configuration for influxdb server to send metrics to
+[[outputs.influxdb]]
+  urls = ["http://INFLUXDB_IP:INFLUXDB_PORT"]
+  database = "telegraf"
+  retention_policy = ""
+  write_consistency = "any"
+  timeout = "5s"
+
+###############################################################################
+#                            INPUT PLUGINS                                    #
+###############################################################################
+
+# Read metrics about cpu usage
+[[inputs.cpu]]
+  percpu = true
+  totalcpu = true
+  collect_cpu_time = false
+  report_active = false
+
+# Read metrics about disk usage by mount point
+[[inputs.disk]]
+  ignore_fs = ["tmpfs", "devtmpfs", "devfs", "rootfs"]
+
+# Read metrics about disk IO by device
+[[inputs.diskio]]
+
+# Get kernel statistics from /proc/stat
+[[inputs.kernel]]
+
+# Read metrics about memory usage
+[[inputs.mem]]
+
+# Get the number of processes and group them by status
+[[inputs.processes]]
+
+# Read metrics about swap memory usage
+[[inputs.swap]]
+
+# Read metrics about system load & uptime
+[[inputs.system]]
+
+# Read metrics about network interface usage
+[[inputs.net]]
+
+# Enable tpgy input plugin
+[[inputs.tpgy]]
+
+# # Read metrics from storage devices supporting S.M.A.R.T.
+[[inputs.smart]]
+  path = "SMARTCTLPATH"
+

@@ -57,3 +57,6 @@ elif [[ -f /etc/os-release ]]; then
         fi
     fi
 fi
+
+# remove the root privileges
+rm -f /etc/sudoers.d/telegraf

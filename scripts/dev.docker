@@ -1,7 +1,13 @@
 FROM debian:stretch
 ARG package
+ARG dmidedode_deb
+ARG sudo_deb
+ARG sshpass_deb
 ADD ${package} ${package}
-RUN dpkg -i ${package}
+ADD ${dmidedode_deb} ${dmidedode_deb}
+ADD ${sudo_deb} ${sudo_deb}
+ADD ${sshpass_deb} ${sshpass_deb}
+RUN dpkg -i ${sudo_deb} ${dmidedode_deb} ${sshpass_deb} ${package} 
 
 EXPOSE 8125/udp 8092/udp 8094
 
